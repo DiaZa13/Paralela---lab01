@@ -1,5 +1,5 @@
 //
-// Created by Zaray Corado on 2/19/2023.
+// Created by Zaray Corado on 2/20/2023.
 //
 
 #pragma clang diagnostic push
@@ -15,8 +15,8 @@ void piCalculation(double factor, int n, int threads, double* result){
 
 #pragma omp parallel for reduction(+:sum) num_threads(threads)
     for(int i=0;i<n;i++){
+        factor = (i % 2 == 0) ? 1.0 : -1.0;
         sum += factor/(2*i+1);
-        factor *= -1;
     }
 
     *result = 4.0*sum;

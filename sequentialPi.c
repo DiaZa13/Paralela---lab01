@@ -35,7 +35,7 @@ int main(int argc, char* argv[]){
 
     piCalculation(factor, n, &result);
 
-    printf("Con n= %d, la aproximacion del valor de PI es: \n%f",n,result);
+    printf("Con n= %d, la aproximacion del valor de PI es: %f",n,result);
 
     return 0;
 }
