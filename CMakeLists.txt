@@ -10,6 +10,6 @@ if (OPENMP_FOUND)
     set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
 endif()
 
-add_executable(parallel parallelPi.c)
+add_executable(parallel_f parallelPi_f.c)
 
 

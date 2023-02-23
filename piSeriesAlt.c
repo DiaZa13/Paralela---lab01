@@ -2,37 +2,41 @@
 #include <stdlib.h>
 #include <omp.h>
 
-int main(int argc, char *argv[])
-{
-    int n = 10e8;
-    double even = 0.0;
-    double odd = 0.0;
-    int thread_count = 8;
-    double ti, tf, t;
-    ti = omp_get_wtime();
-    double t_sec = 3.45;
-#pragma omp parallel for num_threads(thread_count) reduction(+ \
-                                                             : even)
-    for (int i = 0; i < n; i = i + 2)
-    {
+void piCalculation(int n, int threads, double* result){
+    double even = 0.0, odd = 0.0;
+
+#pragma omp parallel for num_threads(threads) reduction(+: even)
+    for (int i = 0; i < n; i = i + 2){
         even += 1.0 / (2 * i + 1);
     }
-#pragma omp parallel for num_threads(thread_count) reduction(+ \
-                                                             : odd)
-    for (int j = 1; j < n; j = j + 2)
-    {
+#pragma omp parallel for num_threads(threads) reduction(+: odd)
+    for (int j = 1; j < n; j = j + 2){
         odd += 1.0 / (2 * j + 1);
     }
-    double pi_approx = 4.0 * (even - odd);
-    tf = omp_get_wtime();
-    t = tf - ti;
 
-    printf("N = %d\n", n);
-    printf("threads = %d\n", thread_count);
-    printf("pi_approx = %.*lf\n", 20, pi_approx);
-    printf("tiempo %f segundos\n", t);
-    printf("SpeedUp %f\n", t_sec/t);
-    printf("Eficiencia %f\n", (t_sec/t)/thread_count);
+    *result = 4.0*(even - odd);
+}
 
-    return 1;
+int main(int argc, char *argv[]){
+    double start, end, result=0.0;
+    int n = 10e7, threads = 4;
+
+    if (argc > 2) {
+        n = strtol(argv[1], NULL, 10);
+        threads = strtol(argv[2], NULL, 10);
+    }
+
+    start = omp_get_wtime();
+    piCalculation( n,threads, &result);
+    end = omp_get_wtime();
+
+    FILE *file;
+    file = fopen("../time.txt", "a");
+    fprintf(file,"%.4f\n",end - start);
+    fclose(file);
+
+    printf("Con %d hilos, el cualculo de PI %f segundos\n", threads, end - start);
+    printf("Con n= %d, la aproximacion del valor de PI es: %f",n,result);
+
+    return 0;
 }

@@ -11,7 +11,7 @@
 void piCalculation(double factor, int n, int threads, double* result){
     double sum = 0.0;
 
-#pragma omp parallel for reduction(+:sum) num_threads(threads)
+#pragma omp parallel for reduction(+:sum) num_threads(threads) private(factor)
     for(int i=0;i<n;i++){
         factor = (i % 2 == 0 ? 1.0 : -1.0);
         sum += factor/(2*i+1);
@@ -21,21 +21,20 @@ void piCalculation(double factor, int n, int threads, double* result){
 }
 
 int main(int argc, char* argv[]){
-    double factor =1.0, result=0.0, start, end;
-    int n = 10e6, threads=4;
+    double factor=1.0, result=0.0, start, end;
+    int n = 10e7, threads=1,  scaling =1.0;
 
     if (argc > 1) {
-        n = strtol(argv[1], NULL, 10);
-        threads = strtol(argv[2], NULL, 10);
+        scaling = strtol(argv[1], NULL, 10);
     }
 
     start = omp_get_wtime();
-    piCalculation(factor, n,threads, &result);
+    piCalculation(factor, (scaling * n), (scaling * threads), &result);
     end = omp_get_wtime();
 
     FILE *file;
     file = fopen("../time.txt", "a");
-    fprintf(file,"%f,%.4f\n",result,end - start);
+    fprintf(file,"%.4f\n",end - start);
     fclose(file);
 
     printf("Con %d hilos, el cualculo de PI %f segundos\n", threads, end - start);

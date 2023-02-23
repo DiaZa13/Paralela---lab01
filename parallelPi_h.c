@@ -11,7 +11,7 @@
 void piCalculation(double factor, int n, int threads, double* result){
     double sum = 0.0;
 
-#pragma omp parallel for reduction(+:sum) num_threads(threads) private(factor)
+#pragma omp parallel for reduction(+:sum) num_threads(threads) private(factor) schedule(guided, 128)
     for(int i=0;i<n;i++){
         factor = (i % 2 == 0 ? 1.0 : -1.0);
         sum += factor/(2*i+1);
@@ -22,7 +22,7 @@ void piCalculation(double factor, int n, int threads, double* result){
 
 int main(int argc, char* argv[]){
     double factor =1.0, result=0.0, start, end;
-    int n = 10e7, threads=1;
+    int n = 10e7, threads=4;
 
     if (argc > 1) {
         n = strtol(argv[1], NULL, 10);
