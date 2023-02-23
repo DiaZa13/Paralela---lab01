@@ -5,7 +5,7 @@ de cmake.
 
 Por su parte, una manera más fácil de poder compilar los programas es mediante línea de consola directa
 ```
-gcc -fopenmp archivo_a_compilar -o nombre_de_ejecutable
+gcc -fopenmp archivo_a_compilar -o nombre_de_ejecutable N Hilos
 ```
 
 Para ejecutar con optimizaciones
